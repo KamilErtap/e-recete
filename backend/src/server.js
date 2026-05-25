@@ -35,21 +35,29 @@ app.use(
   })
 );
 
-const allowedOrigins = "https://e-recete.vercel.app";
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'https://e-recete.vercel.app',
+  'https://e-recete-front-b015np8ei-kamil-ertaps-projects.vercel.app',
+];
 
 app.use(
   cors({
     origin(origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-        return;
+        return callback(null, true);
       }
 
-      callback(new Error('Not allowed by CORS'));
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
+app.options('*', cors());
 
 app.use(apiLimiter);
 
