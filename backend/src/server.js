@@ -57,7 +57,19 @@ app.use(
   })
 );
 
-app.options('*', cors());
+app.options(
+  '*',
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
+    },
+    credentials: true,
+  })
+);
 
 app.use(apiLimiter);
 
